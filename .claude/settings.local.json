@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"/Users/alyssakang/Desktop/Digital Experince/\"*.png)",
+      "Bash(ls \"/Users/alyssakang/Desktop/Digital Experince/\"*.gif)",
+      "Bash(python3 -:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(node --check /tmp/test2.js)",
+      "Bash(node --check /tmp/test3.js)",
+      "Bash(node --check /tmp/test4.js)",
+      "Bash(node --check /tmp/test5.js)",
+      "Bash(python3 -c ':*)",
+      "Bash(node --check /tmp/test6.js)",
+      "Bash(node --check /tmp/test7.js)"
+    ]
+  }
+}

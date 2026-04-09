@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390">
+  <title>Roots &amp; Routes</title>
+  <style>
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform-RegularItalic.woff2') format('woff2');
+      font-weight: 400;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-LightItalic.woff2') format('woff2');
+      font-weight: 300;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-MediumItalic.woff2') format('woff2');
+      font-weight: 500;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Platform';
+      src: url('Platform/Platform-BoldItalic.woff2') format('woff2');
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    :root {
+      --padding: clamp(35px, calc(3vw + 20px), 45px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    p, div, span, h1, h2, h3 {
+      text-wrap: balance;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Landing Page ── */
+    #landing {
+      position: fixed;
+      inset: 0;
+      background: #FAF9EF;
+      z-index: 10;
+      cursor: pointer;
+      transition: background-color 0.7s ease;
+    }
+
+    #landing-content {
+      position: absolute;
+      top: calc(20px + 8vh);
+      left: var(--padding);
+      right: var(--padding);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-svg {
+      width: 91px;
+      height: auto;
+    }
+
+    #persistent-logo {
+      position: fixed;
+      top: 20px;
+      left: var(--padding);
+      z-index: 100;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #landing-tagline {
+      margin-top: 30px;
+      font-family: 'Platform', sans-serif;
+      font-size: clamp(14px, 3.2vw, 52px);
+      color: #471b13;
+      text-align: center;
+      transition: opacity 0.6s ease;
+    }
+
+
+    /* ── Game ── */
+    #game {
+      display: none;
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      background: #FBFFF8;
+    }
+
+    .drop {
+      font-size: clamp(50px, 12vw, 80px);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      user-select: none;
+    }
+
+    .sun {
+      font-size: clamp(40px, 10vw, 60px);
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: transform 0.1s;
+    }
+
+    .sun:active  { cursor: grabbing; }
+
+    .sun.dragging {
+      transform: scale(1.1);
+      cursor: grabbing;
+    }
+
+    .plant {
+      width: clamp(130px, 31.2vw, 208px);
+      height: auto;
+      position: absolute;
+      top: calc(50% - 50px);
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      user-select: none;
+      animation: popIn 0.4s ease forwards;
+    }
+
+    @keyframes popIn {
+      0%   { transform: translate(-50%, -50%) scale(0); }
+      70%  { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes popInSmall {
+      0%   { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+#harvest-text {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      font-family: 'Platform', sans-serif;
+      font-size: clamp(19.8px, 3.85vw, 38.5px);
+      color: #471b13;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #intro-text {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-family: 'Platform', sans-serif;
+      font-size: clamp(26px, 5vw, 50px);
+      color: #471b13;
+      max-width: min(590px, calc(100vw - 40px));
+      transition: opacity 0.8s ease;
+    }
+
+    #plate {
+      font-size: clamp(50px, 15vw, 80px);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      user-select: none;
+      transition: opacity 0.5s ease;
+    }
+
+    #farmer-text {
+      position: absolute;
+      bottom: calc(70px + 13vh);
+      left: var(--padding);
+      right: var(--padding);
+      font-family: 'Platform', sans-serif;
+      font-size: clamp(19.8px, 3.85vw, 38.5px);
+      color: #471b13;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #slide2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 85vh;
+      background: #FBFFF8;
+      transform: translateX(100%);
+      transition: transform 0.6s ease;
+      z-index: 2;
+    }
+
+    .road {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2 * var(--padding));
+      pointer-events: none;
+      user-select: none;
+    }
+  @keyframes truckRoll {
+    0%     { transform: translateX(-55vw); }
+    33.3%  { transform: translateX(27.5vw); }
+    100%   { transform: translateX(110vw); }
+  }
+  @keyframes truckRollSmall {
+    0%     { transform: translateX(-55vw); }
+    46.7%  { transform: translateX(50vw); }
+    100%   { transform: translateX(110vw); }
+  }
+  @keyframes nudgeBounce {
+    0%   { transform: translateX(0); }
+    40%  { transform: translateX(-100px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes carrotFall {
+    0%   { transform: translateX(-50%) translateY(0);      opacity: 1; }
+    100% { transform: translateX(-50%) translateY(130vh);  opacity: 0; }
+  }
+  .road-mobile { display: none; }
+  @media (max-width: 450px) {
+    .road-desktop { display: none; }
+    .road-mobile { display: block; width: calc((100% - 2 * var(--padding)) * 1.1); }
+    .plant { width: clamp(96px, 37.44vw, 249.6px); left: 50% !important; margin-left: 0 !important; }
+    #landing-plate-wrap img { width: 69.2vw !important; }
+    #landing-plate-wrap { top: calc(55% + 25px) !important; }
+    #landing-tagline { font-size: 30px; width: 80vw; }
+    #farmer-text, #nurture-text, #harvest-text,
+    #carrot-text-1, #carrot-text-2, #washing-text,
+    #packaging-text, #transportation-text, #market-text,
+    #vendor-text, #store-text-1, #store-text-2 {
+      font-size: 19.5px !important;
+    }
+    #nurture-text, #harvest-text { bottom: calc(120px + 10vw) !important; }
+  }
+  @media (min-width: 1024px) {
+    #ugly-produce-text { width: 70vw !important; }
+    #nurture-text { width: 80vw !important; }
+    #harvest-text { width: 70vw !important; white-space: normal !important; }
+  }
+  </style>
+</head>
+<body>
+
+  <!-- ── Persistent Logo ── -->
+  <img id="persistent-logo" src="Roots&Routes Logo.png" alt="Roots &amp; Routes" class="logo-svg">
+
+  <img id="truck-emoji" src="Truck.png" style="position:fixed; bottom:18px; left:var(--padding); height:clamp(40px,7vw,56px); width:auto; z-index:101; transition: left 0.6s ease; pointer-events:none; user-select:none;">
+
+  <!-- ── Landing Page ── -->
+ <div id="landing">
+
+    <div id="landing-content">
+      <div id="landing-tagline">Where does the <span style="color:#066F3A;">food</span> on your plate come <span style="color:#066F3A;">from</span>?</div>
+    </div>
+    <div id="landing-plate-wrap" style="position:absolute; top:calc(55% - 5px); left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <img src="Plate.png" alt="plate" style="width:clamp(380px, 57vw, 460px); height:auto; user-select:none;">
+      <div id="landing-plate-hint" style="font-family:'Platform',sans-serif; font-size:clamp(16.8px,3vw,24px); color:#471b13; opacity:0; transition: opacity 0.5s;">(Click to continue)</div>
+    </div>
+    <img src="road.png" alt="road" class="road road-desktop"><img src="mobile road.png" alt="road" class="road road-mobile">
+
+  </div>
+
+  <!-- ── Game ── -->
+  <div id="game">
+    <div id="farmer-text"><span id="farmer-line1"><span style="color:#066F3A;">Blue Sky Organic Farms</span> is a farm located<br>in Pheonix, Arizona.</span><span id="farmer-line2" style="display:block; margin-top:10px; opacity:0; transition: opacity 0.8s ease;">They specialize in leafy greens such as lettuce and cabbage.</span></div>
+    <img id="farm-logo" src="Blue Sky Organic Farms.webp" alt="Blue Sky Organic Farms" style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); max-width:min(450px, 90vw); width:auto; height:auto; opacity:0; pointer-events:none; transition: opacity 0.8s ease;">
+    <img src="road.png" alt="road" class="road road-desktop" style="z-index:99; position:fixed;"><img src="mobile road.png" alt="road" class="road road-mobile" style="z-index:99; position:fixed;">
+    <div id="slide2">
+      <div id="nurture-text" style="position:absolute; bottom:100px; left:50%; transform:translateX(-50%); width:80vw; font-family:'Platform',sans-serif; font-size:clamp(19.8px,3.85vw,38.5px); color:#471b13; text-align:center; opacity:0; transition: opacity 0.8s ease;">David and his hard-working crew nurture crops by fertilizing, watering, and weeding the fields.</div>
+<div id="harvest-text">When the produce is ripe, farmers will carefully harvest the crops by hand.</div>
+      <div id="drag-plant-hint" style="position:absolute; font-family:'Platform',sans-serif; font-size:clamp(14px,2.5vw,20px); color:#471b13; white-space:nowrap; opacity:0; transition: opacity 0.5s;">(Drag the plant up)</div>
+    </div>
+  </div>
+
+  <script>
+    // ── Landing plate hint ──
+    setTimeout(() => {
+      document.getElementById('landing-plate-hint').style.opacity = '1';
+    }, window.innerWidth < 450 ? 1000 : 1500);
+
+    // ── Landing plate → Game ──
+    const landing = document.getElementById('landing');
+    const game    = document.getElementById('game');
+
+    // ── Truck progress ──
+    let truckLeft = null;
+    let truckStep = null;
+    const TRUCK_ADVANCES = 12;
+    function advanceTruck() {
+      const truck = document.getElementById('truck-emoji');
+      if (!truck) return;
+      if (truckLeft === null) {
+        truckLeft = truck.getBoundingClientRect().left;
+        if (window.innerWidth < 450) {
+          const roadEl = document.querySelector('.road-mobile');
+          const roadRect = roadEl.getBoundingClientRect();
+          const truckW = truck.getBoundingClientRect().width;
+          truckStep = (roadRect.width - truckW) / TRUCK_ADVANCES;
+        } else {
+          truckStep = 100;
+        }
+      }
+      truckLeft += truckStep;
+      truck.style.left = truckLeft + 'px';
+    }
+
+        const dynFS = window.innerWidth < 450 ? '19.5px' : 'clamp(19.8px,3.85vw,38.5px)';
+    const dynFS2 = window.innerWidth < 450 ? '19.5px' : 'clamp(18px,3.5vw,35px)';
+
+            document.getElementById('landing').addEventListener('click', () => {
+      // Prevent double-click
+      document.getElementById('landing').style.pointerEvents = 'none';
+
+      // FADE: tagline, plate, plate hint
+      document.getElementById('landing-tagline').style.opacity = '0';
+      document.getElementById('landing-plate-wrap').style.transition = 'opacity 0.6s ease';
+      document.getElementById('landing-plate-wrap').style.opacity = '0';
+
+      // SMART: background color crossfades to match game background
+      landing.style.backgroundColor = '#FBFFF8';
+
+      // After fade completes, switch to game (road persists via road2 fixed position)
+      setTimeout(() => {
+        landing.remove();
+        game.style.display = 'block';
+
+        const persistentLogo = document.getElementById('persistent-logo');
+        const farmLogo = document.getElementById('farm-logo');
+
+        // Show farm logo immediately below persistent logo
+        const persBottom = persistentLogo.getBoundingClientRect().bottom;
+        farmLogo.style.cssText = "position:fixed; top:" + (persBottom + 45) + "px; left:50%; transform:translateX(-50%); max-width:min(450px,90vw); max-height:40vh; width:auto; height:auto; opacity:1; pointer-events:none; transition:opacity 0.6s ease;";
+
+        // Position line1 and line2 below logo, both invisible
+        requestAnimationFrame(() => {
+          const logoRect = farmLogo.getBoundingClientRect();
+
+          const line1 = document.getElementById('farmer-line1');
+          line1.style.opacity = '0';
+          game.appendChild(line1);
+          const line1Top = logoRect.bottom + 44;
+          const farmerWidth = window.innerWidth < 450 ? '80vw' : (window.innerWidth >= 1024 ? '70vw' : '80vw');
+          line1.style.cssText = "position:fixed; display:block; top:" + line1Top + "px; left:50%; transform:translateX(-50%); width:" + farmerWidth + "; font-family:'Platform',sans-serif; font-size:" + dynFS + "; color:#471b13; text-align:center; opacity:0; padding-bottom:" + (window.innerWidth < 450 ? '5px' : '15px') + ";";
+
+          const line2 = document.getElementById('farmer-line2');
+          line2.style.opacity = '0';
+          game.appendChild(line2);
+          line2.style.cssText = "position:fixed; display:block; top:" + line1Top + "px; left:50%; transform:translateX(-50%); width:" + farmerWidth + "; font-family:'Platform',sans-serif; font-size:" + dynFS + "; color:#471b13; text-align:center; opacity:0;";
+
+          // Auto-show farmer line 1 — set transition after paint to avoid blink
+          setTimeout(() => {
+            line1.style.transition = 'opacity 0.6s ease';
+            line2.style.transition = 'opacity 0.6s ease';
+            line1.style.opacity = '1';
+            advanceTruck();
+
+            // After line1 renders, position line2 below it
+            setTimeout(() => {
+              const line2Top = line1.getBoundingClientRect().bottom + 25;
+              line2.style.top = line2Top + 'px';
+
+              // Click 1: fade in farmer line 2
+              game.addEventListener('click', function showLine2() {
+                game.removeEventListener('click', showLine2);
+                line2.style.opacity = '1';
+                advanceTruck();
+
+                // Click 2: go to next screen
+                setTimeout(() => {
+                  game.addEventListener('click', function triggerSlide2() {
+                    game.removeEventListener('click', triggerSlide2);
+                    advanceTruck();
+                    [farmLogo, line1, line2].forEach(el => {
+                      el.style.transition = 'opacity 0.6s ease';
+                      el.style.opacity = '0';
+                    });
+                    document.getElementById('slide2').style.transform = 'translateX(0)';
+                    setTimeout(() => { merge(); }, 600);
+                  });
+                }, 700);
+              });
+            }, 650);
+          }, 400);
+        });
+      }, 700);
+    });
+
+    // ── Game logic ──
+    function merge() {
+      const plant = document.createElement('img');
+      plant.src = 'Plant 1.png';
+      plant.className = 'plant';
+      if (window.innerWidth < 450) plant.style.animation = 'popInSmall 0.4s ease forwards';
+      // Offscreen canvas for pixel-perfect hit detection
+      let plantCanvas = null, plantCtx = null;
+      const _preload = new Image();
+      _preload.onload = function() {
+        document.getElementById('slide2').appendChild(plant);
+        if (window.innerWidth < 450) {
+          plantCanvas = document.createElement('canvas');
+          plantCanvas.width = _preload.naturalWidth;
+          plantCanvas.height = _preload.naturalHeight;
+          plantCtx = plantCanvas.getContext('2d');
+          plantCtx.drawImage(_preload, 0, 0);
+        }
+      };
+      _preload.src = 'Plant 1.png';
+
+      // Plant drag logic
+      let isDraggingPlant = false, pOffX = 0, pOffY = 0, plantTriggered = false;
+      plant.style.cursor = 'grab';
+
+      function startPlantDrag(clientX, clientY) {
+        if (isDraggingPlant) return;
+        isDraggingPlant = true;
+        plant.style.cursor = 'grabbing';
+        const rect = plant.getBoundingClientRect();
+        pOffX = clientX - rect.left;
+        pOffY = clientY - rect.top;
+        // Use fixed positioning so no re-parenting needed
+        plant.style.animation = 'none';
+        plant.style.transform = 'none';
+        plant.style.position = 'fixed';
+        plant.style.top = rect.top + 'px';
+        plant.style.left = rect.left + 'px';
+      }
+
+      function movePlantDrag(clientX, clientY) {
+        if (!isDraggingPlant) return;
+        plant.style.left = (clientX - pOffX) + 'px';
+        plant.style.top = (clientY - pOffY) + 'px';
+        if (!plantTriggered && plant.getBoundingClientRect().top < 100) {
+          plantTriggered = true;
+          isDraggingPlant = false;
+          advanceTruck();
+          const slide2 = document.getElementById('slide2');
+          slide2.style.transition = 'opacity 0.6s ease';
+          slide2.style.opacity = '0';
+          plant.style.transition = 'opacity 0.6s ease';
+          plant.style.opacity = '0';
+          launchTransport(slide2);
+        }
+      }
+
+      function endPlantDrag() { isDraggingPlant = false; plant.style.cursor = 'grab'; }
+
+      plant.addEventListener('mousedown', (e) => { startPlantDrag(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', (e) => movePlantDrag(e.clientX, e.clientY));
+      document.addEventListener('mouseup', endPlantDrag);
+      plant.addEventListener('touchstart', (e) => { startPlantDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+      document.addEventListener('touchmove', (e) => { if (isDraggingPlant) { movePlantDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } }, { passive: false });
+      document.addEventListener('touchend', endPlantDrag);
+
+      document.getElementById('farmer-text').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('nurture-text').style.opacity = '1';
+
+        // After nurture text appears, show water drop in top right + "(Water the plant)" hint
+        setTimeout(() => {
+          const waterDrop = document.createElement('img');
+          waterDrop.src = window.innerWidth < 450 ? 'Water Can 1.png' : 'Water Droplet.png';
+          waterDrop.style.cssText = 'position:absolute; top:' + (window.innerWidth < 450 ? '0px' : '20px') + '; right:' + (window.innerWidth < 450 ? '-10px' : '20px') + '; width:' + (window.innerWidth < 450 ? 'clamp(180px,36vw,270px)' : 'clamp(60px,12vw,90px)') + '; height:auto; cursor:grab; user-select:none; transition: opacity 0.5s ease;';
+          document.getElementById('slide2').appendChild(waterDrop);
+
+          const waterHint = document.createElement('div');
+          waterHint.textContent = '(Water the plant)';
+          waterHint.style.cssText = 'position:fixed; z-index:3; font-family:\'Platform\',sans-serif; font-size:clamp(14px,2.5vw,20px); color:#471b13; white-space:nowrap; opacity:0; transition: opacity 0.5s;';
+          document.body.appendChild(waterHint);
+
+          // Position hint under plant
+          setTimeout(() => {
+            const pr = plant.getBoundingClientRect();
+            waterHint.style.top = (pr.bottom + 5) + 'px';
+            waterHint.style.left = window.innerWidth < 450 ? '50%' : (pr.left + pr.width / 2) + 'px';
+            waterHint.style.transform = 'translateX(-50%)';
+            waterHint.style.opacity = '1';
+          }, 50);
+
+          // Water drop drag logic
+          let isDraggingWater = false, wOffX = 0, wOffY = 0, waterMerged = false;
+
+          function startWaterDrag(clientX, clientY) {
+            if (waterMerged) return;
+            isDraggingWater = true;
+            waterDrop.style.cursor = 'grabbing';
+            if (window.innerWidth < 450) waterDrop.src = 'Water Can 2.png';
+            const r = waterDrop.getBoundingClientRect();
+            wOffX = clientX - r.left;
+            wOffY = clientY - r.top;
+            waterDrop.style.position = 'fixed';
+            waterDrop.style.right = 'auto';
+            waterDrop.style.left = r.left + 'px';
+            waterDrop.style.top = r.top + 'px';
+          }
+
+          function moveWaterDrag(clientX, clientY) {
+            if (!isDraggingWater) return;
+            waterDrop.style.left = (clientX - wOffX) + 'px';
+            waterDrop.style.top = (clientY - wOffY) + 'px';
+            if (waterMerged) return;
+            const wr = waterDrop.getBoundingClientRect();
+            const pr = plant.getBoundingClientRect();
+            const waterCX = wr.left + wr.width / 2;
+            const waterCY = wr.top + wr.height / 2;
+            let hit = false;
+            if (window.innerWidth < 450 && plantCanvas && plantCtx) {
+              const scaleX = plantCanvas.width / pr.width;
+              const scaleY = plantCanvas.height / pr.height;
+              const imgX = Math.round((waterCX - pr.left) * scaleX);
+              const imgY = Math.round((waterCY - pr.top) * scaleY);
+              if (imgX >= 0 && imgX < plantCanvas.width && imgY >= 0 && imgY < plantCanvas.height) {
+                try { hit = plantCtx.getImageData(imgX, imgY, 1, 1).data[3] > 10; } catch(e) {}
+              }
+            } else {
+              const plantCX = pr.left + pr.width / 2;
+              const plantCY = pr.top + pr.height / 2;
+              hit = Math.hypot(waterCX - plantCX, waterCY - plantCY) < Math.min(pr.width, pr.height) * 0.2;
+            }
+            if (hit) {
+              waterMerged = true;
+              isDraggingWater = false;
+              advanceTruck();
+              waterDrop.style.transition = 'opacity 0.5s ease';
+              waterDrop.style.opacity = '0';
+              waterHint.style.opacity = '0';
+              setTimeout(() => {
+                waterDrop.remove();
+                waterHint.remove();
+                // Swap Plant 1 → Plant 2
+                plant.style.transition = 'opacity 0.3s ease';
+                plant.style.opacity = '0';
+                setTimeout(() => {
+                  plant.src = 'Plant 2.png';
+                  plant.style.animation = 'none';
+                  plant.style.transform = 'translate(-50%, -50%)';
+                  plant.style.opacity = '1';
+
+                  // Show harvest text below nurture text
+                  const nurtureEl = document.getElementById('nurture-text');
+                  const harvestEl = document.getElementById('harvest-text');
+                  const nurtureRect = nurtureEl.getBoundingClientRect();
+                  const slide2Rect = document.getElementById('slide2').getBoundingClientRect();
+                  harvestEl.style.bottom = 'auto';
+                  harvestEl.style.top = (nurtureRect.bottom - slide2Rect.top + 25) + 'px';
+                  harvestEl.style.opacity = '1';
+
+                  // Show drag-plant-hint below plant — anchor to plant's fixed center (50vw)
+                  const dragHint = document.getElementById('drag-plant-hint');
+                  const pr2 = plant.getBoundingClientRect();
+                  dragHint.style.top = (pr2.bottom + 5) + 'px';
+                  dragHint.style.left = '50%';
+                  dragHint.style.transform = 'translateX(-50%)';
+                  dragHint.style.opacity = '1';
+
+                  // Define launchTransport for plant drag trigger
+                  launchTransport = function(slide2) {
+                      setTimeout(() => {
+                        slide2.style.display = 'none';
+                        plant.remove();
+
+                        // Sorting text 1 + food waste — single shared screen, only text swaps on click
+                        // processingImg is a fixed body element so it appears instantly (not subject to screen fade)
+                        const sortImgW = window.innerWidth < 450 ? 'clamp(384px,72vw,576px)' : 'clamp(640px,120vw,960px)';
+                        const processingImg = document.createElement('img');
+                        processingImg.src = 'Processing.png';
+                        processingImg.style.cssText = 'position:fixed; left:50%; transform:translateX(-50%); width:' + sortImgW + '; height:auto; pointer-events:none; z-index:200; bottom:-9999px;';
+                        document.body.appendChild(processingImg);
+                        const carrotSrcs = ['carrot 1.png', 'carrot 2.png', 'carrot 3.png'];
+                        const carrotEls = carrotSrcs.map((src, i) => {
+                          const img = document.createElement('img');
+                          img.src = src;
+                          img.style.cssText = 'position:fixed; left:50%; transform:translateX(-50%); width:' + sortImgW + '; height:auto; pointer-events:none; z-index:' + (201 + i) + '; bottom:-9999px;';
+                          document.body.appendChild(img);
+                          return img;
+                        });
+                        const sortingScreen = document.createElement('div');
+                        sortingScreen.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:' + (window.innerWidth < 450 ? 'calc(60vh - 20vw)' : 'calc(60vh)') + '; opacity:0; transition:opacity 0.8s ease;';
+                        const slideText = document.createElement('div');
+                        slideText.id = 'carrot-text-1';
+                        slideText.textContent = 'The next step is sorting. During this step, the harvested produce is sorted by size, quality, and appearance.';
+                        slideText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '80vw' : '70vw') + '; text-align:center; transition:opacity 0.4s ease;';
+                        sortingScreen.appendChild(slideText);
+                        document.body.appendChild(sortingScreen);
+                        setTimeout(() => {
+                          // Position processingImg so its bottom edge is 15px above the text top
+                          const textRect = slideText.getBoundingClientRect();
+                          const imgBottom = window.innerHeight - textRect.top + (window.innerWidth < 450 ? 115 - window.innerWidth * 0.20 : 35);
+                          processingImg.style.bottom = imgBottom + 'px';
+                          carrotEls.forEach(img => { img.style.bottom = imgBottom + 'px'; });
+                          sortingScreen.style.opacity = '1';
+                        }, 50);
+
+                        // Click 1 → swap text + trigger carrot fall
+                        sortingScreen.addEventListener('click', function showFoodWaste() {
+                          sortingScreen.removeEventListener('click', showFoodWaste);
+                          advanceTruck();
+                          slideText.style.opacity = '0';
+                          setTimeout(() => {
+                            slideText.id = 'carrot-text-2';
+                            slideText.textContent = 'Many times, perfectly edible produce will get thrown out if it doesn\'t look "perfect". This results in a large amount of food waste.';
+                            slideText.style.opacity = '1';
+                            carrotEls.forEach((img, i) => { img.style.animation = `carrotFall 0.8s ease ${i * 0.18}s forwards`; });
+
+                            // Click 2 → wash slide
+                            sortingScreen.addEventListener('click', function showWash() {
+                              sortingScreen.removeEventListener('click', showWash);
+                              advanceTruck();
+                              sortingScreen.style.opacity = '0';
+                              [processingImg, ...carrotEls].forEach(img => { img.style.transition = 'opacity 0.6s ease'; img.style.opacity = '0'; });
+                              setTimeout(() => {
+                                sortingScreen.remove();
+                                [processingImg, ...carrotEls].forEach(img => img.remove());
+
+                                // Wash slide
+                                const washSlide = document.createElement('div');
+                                washSlide.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:' + (window.innerWidth < 450 ? 'calc(60vh - 20vw)' : 'calc(60vh)') + '; opacity:0; transition:opacity 0.8s ease;';
+                                const washLine1 = document.createElement('div');
+                                washLine1.id = 'washing-text';
+                                washLine1.textContent = 'After sorting, the chosen produce gets washed and cleaned on site.';
+                                washLine1.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS + '; color:#471b13; width:70vw; text-align:center;';
+                                washSlide.appendChild(washLine1);
+                                const washImgStack = document.createElement('div');
+                                washImgStack.style.cssText = 'position:fixed; left:' + (window.innerWidth < 450 ? 'calc(50% + 5px)' : '50%') + '; transform:translateX(-50%); width:clamp(360px,90vw,720px); height:clamp(360px,90vw,720px); pointer-events:none; z-index:201;';
+                                const carrotLeafImg = document.createElement('img');
+                                carrotLeafImg.src = 'Carrot Leaf.png';
+                                carrotLeafImg.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;';
+                                const washCarrotImg = document.createElement('img');
+                                washCarrotImg.src = 'Wash Carrot.png';
+                                washCarrotImg.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;';
+                                const dirtImg = document.createElement('img');
+                                dirtImg.src = 'Dirt.png';
+                                dirtImg.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;';
+                                washImgStack.appendChild(carrotLeafImg);
+                                washImgStack.appendChild(washCarrotImg);
+                                washImgStack.appendChild(dirtImg);
+                                document.body.appendChild(washImgStack);
+                                document.body.appendChild(washSlide);
+                                setTimeout(() => {
+                                  washSlide.style.opacity = '1';
+                                  const textRect = washLine1.getBoundingClientRect();
+                                  const washStackOffset = window.innerWidth < 450 ? (window.innerWidth * 0.10) : 0;
+                                  washImgStack.style.bottom = (window.innerHeight - textRect.top - 235 + washStackOffset + 100) + 'px';
+                                }, 50);
+
+                                // Click wash → rain drops → dirt falls → second click → scatter text + fall pngs
+                                washSlide.addEventListener('click', function goToScroll() {
+                                  washSlide.removeEventListener('click', goToScroll);
+                                  advanceTruck();
+
+                                  // Grab stack rect before animation
+                                  const stackRect = washImgStack.getBoundingClientRect();
+                                  const dirtTriggerY = stackRect.top + stackRect.height * 0.55;
+
+                                  // Set initial transform on stack so transition works
+                                  washImgStack.style.transform = 'translateX(-50%) translateY(0)';
+
+                                  // Create 6 rain drops
+                                  const dropCfg = [
+                                    { src: 'Water Drop 1.png', x: 8,  speed: 11.0, delay: 0  },
+                                    { src: 'Water Drop 2.png', x: 24, speed: 8.4,  delay: 8  },
+                                    { src: 'Water Drop 3.png', x: 42, speed: 12.0, delay: 16 },
+                                    { src: 'Water Drop 4.png', x: 58, speed: 9.6,  delay: 4  },
+                                    { src: 'Water Drop 5.png', x: 74, speed: 10.4, delay: 11 },
+                                    { src: 'Water Drop 6.png', x: 88, speed: 9.0,  delay: 6  },
+                                  ];
+                                  const rainDrops = dropCfg.map((cfg, idx) => {
+                                    const el = document.createElement('img');
+                                    const initY = (window.innerWidth < 450 && idx === 4) ? -70 : -60;
+                                    el.src = cfg.src;
+                                    el.style.cssText = 'position:fixed; top:' + initY + 'px; left:' + cfg.x + 'vw; width:clamp(30px,7.5vw,50px); height:auto; z-index:9000; pointer-events:none;';
+                                    document.body.appendChild(el);
+                                    return { el, y: initY, speed: cfg.speed, delay: cfg.delay };
+                                  });
+
+                                  let fallTriggered = false;
+                                  function tick() {
+                                    let keepGoing = false;
+                                    rainDrops.forEach((drop, i) => {
+                                      if (drop.delay > 0) { drop.delay--; keepGoing = true; return; }
+                                      drop.y += drop.speed;
+                                      drop.el.style.top = drop.y + 'px';
+                                      if (drop.y < window.innerHeight + 60) keepGoing = true;
+                                      if (i === 1 && !fallTriggered && drop.y >= dirtTriggerY) {
+                                        fallTriggered = true;
+                                        // Only dirt falls first
+                                        dirtImg.style.transition = 'transform 0.85s ease-in';
+                                        dirtImg.style.transform = 'translateY(130vh)';
+                                        setTimeout(() => {
+                                          rainDrops.forEach(d => d.el.remove());
+                                          // Re-enable click for second interaction
+                                          washSlide.addEventListener('click', function scatterAll() {
+                                            washSlide.removeEventListener('click', scatterAll);
+                                            advanceTruck();
+
+                                            // Fall wash carrot and carrot leaf
+                                            washCarrotImg.style.transition = 'transform 0.85s ease-in';
+                                            washCarrotImg.style.transform = 'translateY(130vh)';
+                                            carrotLeafImg.style.transition = 'transform 0.85s ease-in 0.12s';
+                                            carrotLeafImg.style.transform = 'translateY(130vh)';
+
+                                            // Scatter text letters like water drops
+                                            const text = washLine1.textContent;
+                                            washLine1.innerHTML = '';
+                                            const letterSpans = text.split('').map(char => {
+                                              const span = document.createElement('span');
+                                              span.textContent = char === ' ' ? '\u00a0' : char;
+                                              span.style.display = 'inline-block';
+                                              washLine1.appendChild(span);
+                                              return span;
+                                            });
+                                            requestAnimationFrame(() => {
+                                              requestAnimationFrame(() => {
+                                                const fixedSpans = letterSpans.map(span => {
+                                                  const rect = span.getBoundingClientRect();
+                                                  const fixed = document.createElement('span');
+                                                  fixed.textContent = span.textContent;
+                                                  fixed.style.cssText = 'position:fixed; top:' + rect.top + 'px; left:' + rect.left + 'px; font-family:\'Platform\',sans-serif; font-size:' + dynFS + '; color:#471b13; pointer-events:none; z-index:9001; display:inline-block;';
+                                                  document.body.appendChild(fixed);
+                                                  return fixed;
+                                                });
+                                                washLine1.style.opacity = '0';
+                                                requestAnimationFrame(() => {
+                                                  fixedSpans.forEach(span => {
+                                                    const xDrift = (Math.random() - 0.5) * 300;
+                                                    const delay = Math.random() * 0.35;
+                                                    const dur = 0.65 + Math.random() * 0.35;
+                                                    const rot = (Math.random() - 0.5) * 720;
+                                                    span.style.transition = 'transform ' + dur + 's ease-in ' + delay + 's, opacity ' + dur + 's ease-in ' + delay + 's';
+                                                    span.style.transform = 'translateX(' + xDrift + 'px) translateY(130vh) rotate(' + rot + 'deg)';
+                                                    span.style.opacity = '0';
+                                                  });
+                                                  setTimeout(() => {
+                                                    fixedSpans.forEach(s => s.remove());
+                                                    washSlide.style.transition = 'opacity 0.5s ease';
+                                                    washSlide.style.opacity = '0';
+                                                    washImgStack.style.transition = 'opacity 0.5s ease';
+                                                    washImgStack.style.opacity = '0';
+                                                    setTimeout(() => {
+                                                      washSlide.remove();
+                                                      washImgStack.remove();
+
+                                    // Packaging slide — standalone fixed overlay
+                                    const packagingSlide = document.createElement('div');
+                                    const _persLogoBottom = document.getElementById('persistent-logo').getBoundingClientRect().bottom;
+                                    const _pkgTop = _persLogoBottom + (window.innerWidth < 450 ? 59 : 89);
+                                    const _pkgStyle = window.innerWidth < 450
+                                      ? 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:' + _pkgTop + 'px; opacity:0; transition:opacity 0.8s ease; cursor:pointer;'
+                                      : 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:170px; opacity:0; transition:opacity 0.8s ease; cursor:pointer;';
+                                    packagingSlide.style.cssText = _pkgStyle;
+                                    const packingTextWrap = document.createElement('div');
+                                    packingTextWrap.style.cssText = 'display:flex; flex-direction:column; align-items:center; width:85vw;';
+                                    const packagedCarrotsImg = document.createElement('img');
+                                    packagedCarrotsImg.src = 'Packaged Carrots.png';
+                                    const packingText = document.createElement('div');
+                                    packingText.id = 'packaging-text';
+                                    packingText.textContent = 'Then the clean produce is placed into the proper packaging so that it doesn\'t spoil during transport.';
+                                    const packingText2 = document.createElement('div');
+                                    packingText2.textContent = 'For example, carrots are placed into plastic bags with holes to keep them fresh.';
+                                    packingText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '300px' : '65vw') + '; text-align:center; margin-top:15px;';
+                                    if (window.innerWidth < 450) {
+                                      const imgWrapper = document.createElement('div');
+                                      imgWrapper.style.cssText = 'position:relative; width:100vw; display:flex; align-items:center; justify-content:center; margin-top:calc(3vw + 20px - 30vw);';
+                                      packagedCarrotsImg.style.cssText = 'width:100vw; height:auto; pointer-events:none; display:block;';
+                                      packingText.style.cssText = 'position:absolute; top:40vw; font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:300px; text-align:center; left:50%; transform:translateX(-50%);';
+                                      packingText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:300px; text-align:center; position:absolute; bottom:5vw; left:50%; transform:translateX(-50%);';
+                                      imgWrapper.appendChild(packagedCarrotsImg);
+                                      imgWrapper.appendChild(packingText);
+                                      imgWrapper.appendChild(packingText2);
+                                      packingTextWrap.appendChild(imgWrapper);
+                                    } else {
+                                      packagedCarrotsImg.style.cssText = 'width:clamp(336px,84vw,672px); height:auto; pointer-events:none; margin-bottom:35px; margin-top:calc(3vw + 20px);';
+                                      packingText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:65vw; text-align:center;';
+                                      packingTextWrap.appendChild(packagedCarrotsImg);
+                                      packingTextWrap.appendChild(packingText);
+                                      packingTextWrap.appendChild(packingText2);
+                                    }
+                                    packagingSlide.appendChild(packingTextWrap);
+                                    document.body.appendChild(packagingSlide);
+                                    setTimeout(() => { packagingSlide.style.opacity = '1'; }, 50);
+
+                                    packagingSlide.addEventListener('click', function goToTransport() {
+                                      packagingSlide.removeEventListener('click', goToTransport);
+                                      advanceTruck();
+                                      packagingSlide.style.transition = 'opacity 0.6s ease';
+                                      packagingSlide.style.opacity = '0';
+                                      setTimeout(() => {
+                                        packagingSlide.remove();
+                                    const transportScreen = document.createElement('div');
+                                    transportScreen.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; overflow-x:auto; overflow-y:hidden; opacity:0; transition:opacity 0.8s ease;';
+                                    const transportInner = document.createElement('div');
+                                    transportInner.style.cssText = 'width:400vw; height:100%; display:flex; align-items:stretch; position:relative;';
+                                    const screen2 = document.createElement('div');
+                                    screen2.id = 'transportation-text';
+                                    screen2.style.cssText = 'width:100vw; flex-shrink:0; position:relative; display:flex; flex-direction:column; align-items:center; ' + (window.innerWidth < 450 ? '' : 'justify-content:flex-end; padding-bottom:180px;');
+                                    const transportText = document.createElement('div');
+                                    transportText.textContent = 'Trucks and trains carry the produce to distribution centers.';
+                                    transportText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : '');
+                                    screen2.appendChild(transportText);
+                                    transportInner.appendChild(screen2);
+                                    const screen2b = document.createElement('div');
+                                    screen2b.style.cssText = 'width:100vw; flex-shrink:0; position:relative; display:flex; flex-direction:column; align-items:center; ' + (window.innerWidth < 450 ? '' : 'justify-content:flex-end; padding-bottom:180px;');
+                                    const isSmall = window.innerWidth < 450;
+                                    const journeyImgRow = document.createElement('div');
+                                    journeyImgRow.style.cssText = 'position:absolute; top:' + (isSmall ? 'calc(7vw + 90px)' : '5vw') + '; left:50%; transform:translateX(-50%); display:flex; flex-direction:row; align-items:flex-end; justify-content:center; gap:' + (isSmall ? '-65px' : '20px') + ';' + (isSmall ? ' width:100vw;' : '');
+                                    const timeImg = document.createElement('img');
+                                    timeImg.src = 'Clock.gif';
+                                    timeImg.style.cssText = 'width:' + (isSmall ? '49.1vw' : '54vw') + '; height:auto; pointer-events:none;';
+                                    const sun2Img = document.createElement('img');
+                                    sun2Img.src = 'Sun 2.png';
+                                    sun2Img.style.cssText = 'width:' + (isSmall ? '72.16vw' : '38vw') + '; height:auto; pointer-events:none; position:relative; top:' + (isSmall ? '0px' : '-7vw') + '; left:' + (isSmall ? '0' : '-2vw') + ';';
+                                    journeyImgRow.appendChild(timeImg);
+                                    journeyImgRow.appendChild(sun2Img);
+                                    screen2b.appendChild(journeyImgRow);
+                                    const journeyText = document.createElement('div');
+                                    journeyText.textContent = 'But, long journeys, hot weather, or delays can make fruits and veggies wilt or spoil, leading to even more waste.';
+                                    journeyText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : '');
+                                    screen2b.appendChild(journeyText);
+                                    transportInner.appendChild(screen2b);
+                                    if (window.innerWidth < 450) {
+                                      const marketImgSpan = document.createElement('img');
+                                      marketImgSpan.src = 'Market.png';
+                                      marketImgSpan.style.cssText = 'position:absolute; top:0; left:200vw; width:200vw; height:auto; pointer-events:none; z-index:0;';
+                                      transportInner.appendChild(marketImgSpan);
+                                    }
+                                    const screen3 = document.createElement('div');
+                                    screen3.style.cssText = 'width:100vw; flex-shrink:0; position:relative; display:flex; flex-direction:column; align-items:center; ' + (window.innerWidth < 450 ? '' : 'justify-content:flex-end; padding-bottom:180px;');
+                                    const localText = document.createElement('div');
+                                    localText.id = 'vendor-text';
+                                    localText.textContent = 'Blue Sky Organic Farms sells their produce at local vendors which shortens the transportation time. This means that their produce is always sold fresh.';
+                                    localText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : ' position:relative;');
+                                    screen3.appendChild(localText);
+                                    transportInner.appendChild(screen3);
+                                    const screen4 = document.createElement('div');
+                                    screen4.style.cssText = 'width:100vw; flex-shrink:0; position:relative; display:flex; flex-direction:column; align-items:center; ' + (window.innerWidth < 450 ? '' : 'justify-content:flex-end; padding-bottom:180px;');
+                                    const marketText = document.createElement('div');
+                                    marketText.id = 'market-text';
+                                    marketText.textContent = 'The fresh produce then makes its way over to Sprouts, the Downtown Pheonix Farmer\'s Market, and the Gilbert Farmer\'s Market!';
+                                    marketText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? 'calc(70vw + 20px)' : '70vw') + '; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : ' position:relative;');
+                                    screen4.appendChild(marketText);
+                                    transportInner.appendChild(screen4);
+                                    transportScreen.appendChild(transportInner);
+                                    const bigTruck = document.createElement('img');
+                                    bigTruck.src = 'Truck.png';
+                                    bigTruck.style.cssText = 'position:fixed; top:' + (window.innerWidth < 450 ? 'calc(50vh - 110px - 2vw)' : 'calc(50vh - 50px - 2vw)') + '; left:0; height:clamp(202px,36vw,288px); width:auto; pointer-events:none; z-index:102; opacity:0;';
+                                    document.body.appendChild(bigTruck);
+                                    document.body.appendChild(transportScreen);
+                                    setTimeout(() => { transportScreen.style.opacity = '1'; }, 50);
+                                    setTimeout(() => {
+                                      transportInner.style.animation = 'nudgeBounce ' + (window.innerWidth < 450 ? '1.0s' : '2s') + ' ease forwards';
+                                    }, window.innerWidth < 450 ? 1500 : 4000);
+                                    let truckDone = false;
+                                    let lastScreenReached = false;
+                                    function enableStoreClick() {
+                                      if (!truckDone || !lastScreenReached) return;
+                                      transportScreen.addEventListener('click', function goToStore() {
+                                        transportScreen.removeEventListener('click', goToStore);
+                                        advanceTruck();
+                                        transportScreen.style.transition = 'opacity 0.6s ease';
+                                        transportScreen.style.opacity = '0';
+                                        setTimeout(() => {
+                                          transportScreen.remove();
+                                          bigTruck.remove();
+                                          const storeSlide = document.createElement('div');
+                                          storeSlide.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:' + (window.innerWidth < 450 ? 'calc(180px - 23vw)' : '180px') + '; opacity:0; transition:opacity 0.8s ease;';
+                                          if (window.innerWidth < 450) {
+                                            const uglyProduceImg = document.createElement('img');
+                                            uglyProduceImg.src = 'Ugly Produce.png';
+                                            uglyProduceImg.style.cssText = 'width:140vw; height:auto; pointer-events:none; position:absolute; top:15vw; left:50%; transform:translateX(-50%);';
+                                            storeSlide.appendChild(uglyProduceImg);
+                                          }
+                                          const storeText1 = document.createElement('div');
+                                          storeText1.id = 'store-text-1';
+                                          storeText1.textContent = 'Shoppers browse the aisles, picking out the fruits and vegetables that look the best to them.';
+                                          storeText1.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '85vw' : '60vw') + '; text-align:center;';
+                                          const storeText2 = document.createElement('div');
+                                          storeText2.id = 'store-text-2';
+                                          storeText2.textContent = 'Choosing \'ugly\' or imperfect produce is one small way you can help reduce food waste!';
+                                          storeText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '85vw' : '60vw') + '; text-align:center; margin-top:25px;';
+                                          storeSlide.appendChild(storeText1);
+                                          storeSlide.appendChild(storeText2);
+                                          document.body.appendChild(storeSlide);
+                                          setTimeout(() => { storeSlide.style.opacity = '1'; }, 50);
+                                        }, 600);
+                                      });
+                                    }
+                                    const scrollObserver = new IntersectionObserver((entries) => {
+                                      entries.forEach(entry => {
+                                        if (entry.isIntersecting) {
+                                          if (entry.target === screen2) {
+                                            setTimeout(() => { advanceTruck(); }, 850);
+                                            bigTruck.style.opacity = '1';
+                                            bigTruck.style.animation = (window.innerWidth < 450 ? 'truckRollSmall' : 'truckRoll') + ' 32s linear forwards';
+                                            truckDone = true;
+                                            enableStoreClick();
+                                          }
+                                          if (entry.target === screen4) {
+                                            advanceTruck();
+                                            lastScreenReached = true;
+                                            enableStoreClick();
+                                          }
+                                          scrollObserver.unobserve(entry.target);
+                                        }
+                                      });
+                                    }, { root: transportScreen, threshold: 0.1 });
+                                    scrollObserver.observe(screen2);
+                                    scrollObserver.observe(screen4);
+                                      }, 600);
+                                    });
+                                                    }, 500);
+                                                  }, 1200);
+                                                });
+                                              });
+                                            });
+                                          });
+                                        }, 850);
+                                      }
+                                    });
+                                    if (keepGoing) requestAnimationFrame(tick);
+                                  }
+                                  requestAnimationFrame(tick);
+                                });
+                              }, 600);
+                            });
+                          }, 600);
+                        });
+                      }, 600);
+                  };
+                }, 300);
+              }, 500);
+            }
+          }
+
+          function endWaterDrag() { isDraggingWater = false; if (!waterMerged) waterDrop.style.cursor = 'grab'; }
+
+           waterDrop.addEventListener('mousedown', (e) => { startWaterDrag(e.clientX, e.clientY); e.preventDefault(); });
+          document.addEventListener('mousemove', (e) => moveWaterDrag(e.clientX, e.clientY));
+          document.addEventListener('mouseup', endWaterDrag);
+          waterDrop.addEventListener('touchstart', (e) => { startWaterDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+          document.addEventListener('touchmove', (e) => { if (isDraggingWater) { moveWaterDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } }, { passive: false });
+          document.addEventListener('touchend', endWaterDrag);
+        }, 500);
+      }, 500);
+    }
+  </script>
+</body>
+</html>
+ 
