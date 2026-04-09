@@ -11,7 +11,8 @@
       "Bash(node --check /tmp/test5.js)",
       "Bash(python3 -c ':*)",
       "Bash(node --check /tmp/test6.js)",
-      "Bash(node --check /tmp/test7.js)"
+      "Bash(node --check /tmp/test7.js)",
+      "Bash(ls \"/Users/alyssakang/Desktop/Digital Experince/\"*.woff2)"
     ]
   }
 }
