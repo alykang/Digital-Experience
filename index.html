@@ -266,7 +266,8 @@
   .road-mobile { display: none; }
   @media (max-width: 450px) {
     .road-desktop { display: none; }
-    .road-mobile { display: block; width: calc((100% - 2 * var(--padding)) * 1.1); }
+    .road-mobile { display: block; width: calc((100% - 2 * var(--padding)) * 1.1); bottom: 5vw; }
+    #truck-emoji { bottom: 5vw !important; }
     .plant { width: clamp(96px, 37.44vw, 249.6px); left: 50% !important; margin-left: 0 !important; }
     #landing-plate-wrap img { width: 69.2vw !important; }
     #landing-plate-wrap { top: calc(55% + 25px) !important; }
@@ -791,7 +792,7 @@
                                     const _persLogoBottom = document.getElementById('persistent-logo').getBoundingClientRect().bottom;
                                     const _pkgTop = _persLogoBottom + (window.innerWidth < 450 ? 59 : 89);
                                     const _pkgStyle = window.innerWidth < 450
-                                      ? 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:' + _pkgTop + 'px; opacity:0; transition:opacity 0.8s ease; cursor:pointer;'
+                                      ? 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:opacity 0.8s ease; cursor:pointer;'
                                       : 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:170px; opacity:0; transition:opacity 0.8s ease; cursor:pointer;';
                                     packagingSlide.style.cssText = _pkgStyle;
                                     const packingTextWrap = document.createElement('div');
@@ -806,10 +807,10 @@
                                     packingText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '300px' : '65vw') + '; text-align:center; margin-top:15px;';
                                     if (window.innerWidth < 450) {
                                       const imgWrapper = document.createElement('div');
-                                      imgWrapper.style.cssText = 'position:relative; width:100vw; display:flex; align-items:center; justify-content:center; margin-top:calc(3vw + 20px - 30vw);';
+                                      imgWrapper.style.cssText = 'position:relative; width:100vw; display:flex; align-items:center; justify-content:center;';
                                       packagedCarrotsImg.style.cssText = 'width:100vw; height:auto; pointer-events:none; display:block;';
                                       packingText.style.cssText = 'position:absolute; top:40vw; font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:300px; text-align:center; left:50%; transform:translateX(-50%);';
-                                      packingText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:300px; text-align:center; position:absolute; bottom:5vw; left:50%; transform:translateX(-50%);';
+                                      packingText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:300px; text-align:center; position:absolute; bottom:0; left:50%; transform:translateX(-50%);';
                                       imgWrapper.appendChild(packagedCarrotsImg);
                                       imgWrapper.appendChild(packingText);
                                       imgWrapper.appendChild(packingText2);
@@ -841,7 +842,7 @@
                                     screen2.style.cssText = 'width:100vw; flex-shrink:0; position:relative; display:flex; flex-direction:column; align-items:center; ' + (window.innerWidth < 450 ? '' : 'justify-content:flex-end; padding-bottom:180px;');
                                     const transportText = document.createElement('div');
                                     transportText.textContent = 'Trucks and trains carry the produce to distribution centers.';
-                                    transportText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : '');
+                                    transportText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; bottom:150px; left:50%; transform:translateX(-50%);' : '');
                                     screen2.appendChild(transportText);
                                     transportInner.appendChild(screen2);
                                     const screen2b = document.createElement('div');
@@ -860,7 +861,7 @@
                                     screen2b.appendChild(journeyImgRow);
                                     const journeyText = document.createElement('div');
                                     journeyText.textContent = 'But, long journeys, hot weather, or delays can make fruits and veggies wilt or spoil, leading to even more waste.';
-                                    journeyText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : '');
+                                    journeyText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center;' + (window.innerWidth < 450 ? ' position:absolute; bottom:150px; left:50%; transform:translateX(-50%);' : '');
                                     screen2b.appendChild(journeyText);
                                     transportInner.appendChild(screen2b);
                                     if (window.innerWidth < 450) {
@@ -874,7 +875,7 @@
                                     const localText = document.createElement('div');
                                     localText.id = 'vendor-text';
                                     localText.textContent = 'Blue Sky Organic Farms sells their produce at local vendors which shortens the transportation time. This means that their produce is always sold fresh.';
-                                    localText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : ' position:relative;');
+                                    localText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; bottom:150px; left:50%; transform:translateX(-50%);' : ' position:relative;');
                                     screen3.appendChild(localText);
                                     transportInner.appendChild(screen3);
                                     const screen4 = document.createElement('div');
@@ -882,7 +883,7 @@
                                     const marketText = document.createElement('div');
                                     marketText.id = 'market-text';
                                     marketText.textContent = 'The fresh produce then makes its way over to Sprouts, the Downtown Pheonix Farmer\'s Market, and the Gilbert Farmer\'s Market!';
-                                    marketText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? 'calc(70vw + 20px)' : '70vw') + '; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; top:110vw; left:50%; transform:translateX(-50%);' : ' position:relative;');
+                                    marketText.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:70vw; text-align:center; z-index:1;' + (window.innerWidth < 450 ? ' position:absolute; bottom:150px; left:50%; transform:translateX(-50%);' : ' position:relative;');
                                     screen4.appendChild(marketText);
                                     transportInner.appendChild(screen4);
                                     transportScreen.appendChild(transportInner);
@@ -908,13 +909,7 @@
                                           transportScreen.remove();
                                           bigTruck.remove();
                                           const storeSlide = document.createElement('div');
-                                          storeSlide.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:' + (window.innerWidth < 450 ? 'calc(180px - 23vw)' : '180px') + '; opacity:0; transition:opacity 0.8s ease;';
-                                          if (window.innerWidth < 450) {
-                                            const uglyProduceImg = document.createElement('img');
-                                            uglyProduceImg.src = 'Ugly Produce.png';
-                                            uglyProduceImg.style.cssText = 'width:140vw; height:auto; pointer-events:none; position:absolute; top:15vw; left:50%; transform:translateX(-50%);';
-                                            storeSlide.appendChild(uglyProduceImg);
-                                          }
+                                          storeSlide.style.cssText = 'position:fixed; inset:0; background:#FBFFF8; display:flex; flex-direction:column; align-items:center; justify-content:' + (window.innerWidth < 450 ? 'center; overflow:hidden' : 'flex-end; padding-bottom:180px') + '; opacity:0; transition:opacity 0.8s ease;';
                                           const storeText1 = document.createElement('div');
                                           storeText1.id = 'store-text-1';
                                           storeText1.textContent = 'Shoppers browse the aisles, picking out the fruits and vegetables that look the best to them.';
@@ -923,8 +918,20 @@
                                           storeText2.id = 'store-text-2';
                                           storeText2.textContent = 'Choosing \'ugly\' or imperfect produce is one small way you can help reduce food waste!';
                                           storeText2.style.cssText = 'font-family:\'Platform\',sans-serif; font-size:' + dynFS2 + '; color:#471b13; width:' + (window.innerWidth < 450 ? '85vw' : '60vw') + '; text-align:center; margin-top:25px;';
-                                          storeSlide.appendChild(storeText1);
-                                          storeSlide.appendChild(storeText2);
+                                          if (window.innerWidth < 450) {
+                                            const storeContent = document.createElement('div');
+                                            storeContent.style.cssText = 'display:flex; flex-direction:column; align-items:center;';
+                                            const uglyProduceImg = document.createElement('img');
+                                            uglyProduceImg.src = 'Ugly Produce.png';
+                                            uglyProduceImg.style.cssText = 'width:140vw; height:auto; pointer-events:none; display:block;';
+                                            storeContent.appendChild(uglyProduceImg);
+                                            storeContent.appendChild(storeText1);
+                                            storeContent.appendChild(storeText2);
+                                            storeSlide.appendChild(storeContent);
+                                          } else {
+                                            storeSlide.appendChild(storeText1);
+                                            storeSlide.appendChild(storeText2);
+                                          }
                                           document.body.appendChild(storeSlide);
                                           setTimeout(() => { storeSlide.style.opacity = '1'; }, 50);
                                           storeSlide.addEventListener('click', () => {
